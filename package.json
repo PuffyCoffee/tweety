@@ -7,6 +7,7 @@
     "test": "test"
   },
   "dependencies": {
+    "jsonfile": "^2.2.3",
     "twit": "^2.2.2"
   },
   "devDependencies": {},

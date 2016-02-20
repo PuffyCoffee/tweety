@@ -1,35 +1,37 @@
-var Twit = require('twit');
+var tl = require('./tweet-list.js');
+var twitter = require('./tweet.js');
 
-var T = new Twit({
-	consumer_key: 'GgpcaHOvQofrDO2IJdQSU28mV',
-    consumer_secret: 'zOX0zez6cOqGizKOJZOoBId833bldDunibdLAuApkVUqKoN9bv',
-    access_token: '700801715591729152-S2UheBZ73XxyCptBhnagTkgJYpi7d85',
-    access_token_secret: 'm4qCgVpkVKhrY9L3H3ZUY97kzs0vQrR6NK89Ltah7A8m8'
-});
+var T = twitter.t;
 
-function retweetRecent() {
-	T.get('search/tweets', {q: "@Alta_Vista_ OR #DoRight", result_type: "recent"}, function (err, data, response) {
-		if (!err) {
+function quoteTweet() {
+	T.get('search/tweets', {q: "@Alta_Vista_ AND #DoRight", result_type: "recent"}, function (err, data, response) {
+		if (!err && data.statuses[0].user.screen_name != "AVS_DIME_Team") {
             var retweetId = data.statuses[0].id_str;
-			var tweet = data.statuses[0];
-            var quoteBody = tweet.text;
-            var retweetBody = 'RT @Alta_Vista_ #DoRight and #DIMEROCKS ' + quoteBody;
-            if (retweetBody.length > 140) {
-                retweetBody = retweetBody.slice(0, 136) + '...';
-            }
-			T.post('statuses/update', {status: retweetBody}, function (err, response) {
-				if (response) {
-					console.log('Quote Tweet ID: ' + retweetId);
-				}
-				if (err) {
-					console.log('Quote Error: ', err);
+			tl.checkTweeted(retweetId, function(err, fileContent) {
+				if (!err) {
+					var list = fileContent;
+					if (typeof list[retweetId] === 'undefined') {
+						// TWEET!
+						var obj = {};
+						obj[retweetId] = new Date();
+						twitter.tweet(data);
+						tl.writeBack(obj, function() {
+							console.log(retweetId, " added to tweetIDList file");
+						});
+					} else {
+						// Already tweeted, try to find available one.
+						console.log("no one tweeted in last 15 min...");
+					}
+				} else {
+					console.log("trouble reading file, no tweet...");
 				}
 			});
+
 		} else {
-			console.log('Search Error: ', err);
+			console.log('Search Error (not gonna tweet myself). ');
 		}
 	});
 }
 
-retweetRecent();
-// setInterval(retweetRecent, 5000);
+quoteTweet();
+setInterval(retweetRecent, 1800000);
