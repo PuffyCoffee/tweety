@@ -1,0 +1,19 @@
+{
+  "name": "doright",
+  "version": "0.0.1",
+  "description": "A twitter bot",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "jsonfile": "^2.2.3",
+    "twit": "^2.2.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Peng Zhang",
+  "license": "MIT"
+}
