@@ -1,4 +1,5 @@
 var Twit = require('twit');
+var json = require('jsonfile');
 
 var T = null;
 
@@ -8,8 +9,9 @@ function init(config) {
 
 function search(criteria) {
     T.get('search/tweets', criteria, function(err, data, response) {
-        console.log(data);
-        console.log(response);
+        json.writeFile("data.json", data, _ => {
+            console.log("done");
+        });
     })
 }
 
