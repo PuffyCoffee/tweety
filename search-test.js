@@ -8,5 +8,5 @@ tweetSearch.init({
 });
 
 tweetSearch.search({
-    q: 'Software Engineer'
+    q: 'Web Development'
 });
