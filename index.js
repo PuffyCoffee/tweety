@@ -31,10 +31,10 @@ function retweet(criteria) {
                 });
             }
         });
-    })
+    });
 }
 
 module.exports = {
     init: init,
     retweet: retweet
-}
+};
