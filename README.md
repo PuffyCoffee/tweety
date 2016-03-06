@@ -4,7 +4,7 @@ A twitter bot, automatically collects information you need on twitter, please ch
 
 Check my bot [here](https://twitter.com/AVS_DIME_Team)
 
-![tweety](./tweety.png)
+![tweety](https://github.com/PuffyCoffee/tweety/blob/master/tweety.png)
 
 (Terrible drawing, I know)
 
