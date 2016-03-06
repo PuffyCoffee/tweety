@@ -34,4 +34,5 @@ function quoteTweet() {
 }
 
 quoteTweet();
-setInterval(retweetRecent, 1800000);
+
+setInterval(quoteTweet, 1800000);
