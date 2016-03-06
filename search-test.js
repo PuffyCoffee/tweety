@@ -1,4 +1,4 @@
-var tweetSearch = require('./search.js');
+var tweetSearch = require('./index.js');
 
 tweetSearch.init({
     consumer_key: 'in05iL9kV64hQQxQrUZEHj5Hs',
@@ -7,6 +7,6 @@ tweetSearch.init({
     access_token_secret: '0Rq6SH00PjQM9RTsdYtD6QezyutysgDFQbPePEvdxfZmX'
 });
 
-tweetSearch.search({
-    q: 'Web Development'
+tweetSearch.retweet({
+    q: 'Web Development OR Java OR JavaScript'
 });

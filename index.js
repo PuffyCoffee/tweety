@@ -1,38 +1,40 @@
-var tl = require('./tweet-list.js');
-var twitter = require('./tweet.js');
+var Twit = require('twit');
+var json = require('jsonfile');
 
-var T = twitter.t;
+var T = null;
 
-function quoteTweet() {
-	T.get('search/tweets', {q: "@Alta_Vista_ AND #DoRight", result_type: "recent"}, function (err, data, response) {
-		if (!err && data.statuses[0].user.screen_name != "AVS_DIME_Team") {
-            var retweetId = data.statuses[0].id_str;
-			tl.checkTweeted(retweetId, function(err, fileContent) {
-				if (!err) {
-					var list = fileContent;
-					if (typeof list[retweetId] === 'undefined') {
-						// TWEET!
-						var obj = {};
-						obj[retweetId] = new Date();
-						twitter.tweet(data);
-						tl.writeBack(obj, function() {
-							console.log(retweetId, " added to tweetIDList file");
-						});
-					} else {
-						// Already tweeted, try to find available one.
-						console.log("no one tweeted in last 15 min...");
-					}
-				} else {
-					console.log("trouble reading file, no tweet...");
-				}
-			});
-
-		} else {
-			console.log('Search Error (not gonna tweet myself). ');
-		}
-	});
+function init(config) {
+    T = new Twit(config);
 }
 
-quoteTweet();
+function retweet(criteria) {
+    T.get('search/tweets', criteria, function(err, data, response) {
+        json.readFile('tweetIDList.json', function(err, obj) {
+            if (err) console.log(err);
+            else {
+                var tweetedObj = obj,
+                    topic = data;
+                for (var i = 0; i < data.statuses.length - 1; i += 1) {
+                    if (typeof tweetedObj[data.statuses[i].id_str] === 'undefined') {
+                        T.post('statuses/retweet/:id', {id: data.statuses[i].id_str}, function(err, data, response) {
+                            if (err) console.log(err);
+                            else {
+                                console.log("Retweeted at ", new Date().toString());
+                            }
+                        });
+                        tweetedObj[data.statuses[i].id_str] = new Date();
+                    }
+                }
+                json.writeFile('tweetIDList.json', tweetedObj, function(err) {
+                    if (err)
+                        console.log(err);
+                });
+            }
+        });
+    })
+}
 
-setInterval(quoteTweet, 1800000);
+module.exports = {
+    init: init,
+    retweet: retweet
+}
